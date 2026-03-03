@@ -12,11 +12,9 @@
   },
   "scripts": {
     "check": "tsc && oxlint --type-aware src",
-    "serve": "bun --hot serve.ts"
+    "serve": "bun pages/demo.html pages/accuracy.html pages/benchmark.html pages/interleaving.html"
   },
   "dependencies": {
-    "@napi-rs/canvas": "^0.1.95",
-    "harfbuzzjs": "^0.10.0",
-    "opentype.js": "^1.3.4"
+    "harfbuzzjs": "^0.10.0"
   }
 }
