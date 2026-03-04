@@ -70,6 +70,11 @@ function parseFontSize(font: string): number {
 // families. Auto-detected by measuring a reference emoji vs fontSize.
 
 const emojiPresentationRe = /\p{Emoji_Presentation}/u
+// Shared segmenters: hoisted to module level to avoid per-prepare() construction.
+// Intl.Segmenter construction loads ICU data internally — expensive to repeat.
+// Captures the default locale at module load time. If locale support is needed
+// in the future, expose a function to reinitialize these with a new locale.
+const sharedWordSegmenter = new Intl.Segmenter(undefined, { granularity: 'word' })
 const sharedGraphemeSegmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
 
 function isEmojiGrapheme(g: string): boolean {
@@ -361,7 +366,7 @@ export function prepare(text: string, font: string, lineHeight?: number): Prepar
   const emojiCanvasW = ctx.measureText('\u{1F600}').width
   const emojiCorrection = emojiCanvasW > fontSize + 0.5 ? emojiCanvasW - fontSize : 0
 
-  const segmenter = new Intl.Segmenter(undefined, { granularity: 'word' })
+  const segmenter = sharedWordSegmenter
   // CSS white-space: normal collapses newlines to spaces. For pre-wrap behavior,
   // callers should split on \n and prepare each paragraph separately.
   const normalized = text.replace(/\n/g, ' ')

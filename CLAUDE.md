@@ -24,7 +24,7 @@ DOM-free text measurement using canvas `measureText()` + `Intl.Segmenter`. Two-p
 
 - Canvas over DOM: zero DOM reads in prepare() or layout(). No read/write interleaving.
 - Word width cache (`Map<font, Map<segment, width>>`): persists across prepare() calls. Common words shared across texts. No eviction — grows monotonically per font. Fine for fixed-font bounded feeds; may need LRU for long sessions with varied fonts. `clearCache()` exists for manual eviction.
-- Intl.Segmenter over split(' '): handles CJK (per-character breaks), Thai, all scripts.
+- Intl.Segmenter over split(' '): handles CJK (per-character breaks), Thai, all scripts. Word and grapheme segmenters hoisted to module level (ICU construction is expensive). Captures default locale at load time.
 - Punctuation merged into preceding word-like segments only (not spaces — that hides content from line-breaking).
 - Non-word, non-space segments (emoji, parens) are break points, same as words.
 - Emoji correction: auto-detected per font size, constant per emoji grapheme, font-independent.
@@ -34,6 +34,13 @@ DOM-free text measurement using canvas `measureText()` + `Intl.Segmenter`. Two-p
 ### Accuracy
 
 Chrome 99.9%, Safari 98.8%, HarfBuzz 100%. See [README.md](README.md) for details.
+
+### TODO
+
+- Locale switch: segmenters are hoisted with the default locale. Expose a function to reinitialize them with a new locale without requiring a page refresh (e.g. `setLocale('ja')`). Should also clear the word cache since segmentation boundaries change per locale.
+- Benchmark page: measurement methodology needs review (visible vs hidden containers, prepare cold vs warm).
+- Demo page: visual side-by-side comparison of library vs DOM rendering.
+- Interleaving page: realistic DOM interleaving demo.
 
 ### Related
 
