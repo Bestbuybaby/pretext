@@ -978,6 +978,11 @@ Interpretation:
 - the class is now stable enough to describe honestly: Safari is clean at the anchors, while Chrome keeps a narrow-width positive field that depends on the chosen Chinese font
 - that makes Chinese a genuine steering class, not just an extension of “Japanese already told us CJK is hard”
 
+Rejected follow-ups after that:
+- carrying stranded CJK closing punctuation like `」` / `』` onto the following ideograph across segment boundaries looked semantically plausible, but it made `祝福` worse on the broader Chrome sweep (`44/61 exact` to `41/61 exact`) while only nudging Japanese slightly
+- coalescing standalone repeated punctuation runs like `——` and `……` into single preprocessing units also looked plausible from the local Chinese diagnostics, but again made `祝福` worse overall without fixing the headline anchors
+- conclusion: the remaining Chinese field is not another cheap punctuation-carry bug; it is better treated as a real canary than as another heuristic bucket
+
 ## Sampled cross-font corpus matrix
 
 The first font-axis pass was lighter-weight on purpose: keep the same corpora and widths, but swap only
